@@ -32,9 +32,13 @@ def convert(
     for file in os.listdir("input"):
         if not (file.endswith(".mp4") or file.endswith(".mkv")):
             continue
-    
-        print(f"Converting {file}...")
+
         output = file.replace(" ", "_").replace(".mp4", ".mkv")
+        if os.path.exists(f"output/{output}"):
+            print(f"{output} already exists, skipping.")
+            continue
+
+        print(f"Converting {file}...")
 
         rife = None
         process = None
