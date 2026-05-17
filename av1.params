@@ -1,0 +1,5 @@
+-crf
+25
+-hwaccel
+cuda
+-pass=-svtav1-params tune=0:aq-mode=2:enable-overlays=1
