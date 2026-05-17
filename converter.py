@@ -128,10 +128,13 @@ def convert(
                 log_file.write(chunk)
         log_file.close()
 
+        if process.stdout:
+            process.stdout.close()
+        process.wait()
+
         if rife is not None:
-            rife.kill()
-        if process is not None:
-            process.kill()
+            rife.terminate()
+            rife.wait()
 
         if process.returncode != 0:
             raise RuntimeError(f"\nProcess finished with exit code: {process.returncode}")
