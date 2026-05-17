@@ -16,6 +16,7 @@ clip = vsrife.rife(
     clip,
     factor_num=factor,
     trt=True,
+    trt_optimization_level=5,
     auto_download=True
 )
 clip = core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")

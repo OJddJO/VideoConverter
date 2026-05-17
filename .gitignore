@@ -1,6 +1,5 @@
 input/
 output/
 venv/
-Practical-RIFE/
 *.pkl
 *.pth

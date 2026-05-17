@@ -36,6 +36,8 @@ def convert(
         print(f"Converting {file}...")
         output = file.replace(" ", "_").replace(".mp4", ".mkv")
 
+        rife = None
+        process = None
         if fg == 1:
             subs_map = [item for sub in s for item in ("-map", f"0:s:m:language:{sub}")]
             cmd = [
@@ -81,8 +83,8 @@ def convert(
             cmd = [
                 'ffmpeg',
                 '-hide_banner',
-                '-hwaccel', hwaccel,    # Hardware acceleration
-                *hardware_accel_format, # Hardware acceleration format
+                # '-hwaccel', hwaccel,    # Hardware acceleration
+                # *hardware_accel_format, # Hardware acceleration format
                 '-i', 'pipe:',          # Input 0: Video stream with fg
                 '-i', f'input/{file}',  # Input 1: Original file
                 '-vcodec', vc,          # Video codec
@@ -122,11 +124,18 @@ def convert(
                 log_file.write(chunk)
         log_file.close()
 
+        if rife is not None:
+            rife.kill()
+        if process is not None:
+            process.kill()
+
+        if process.returncode != 0:
+            raise RuntimeError(f"\nProcess finished with exit code: {process.returncode}")
         print(f"Converted {file} to {output}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Converter", fromfile_prefix_chars='@')
+    parser = argparse.ArgumentParser("Converter", description="Simple tool for transcoding. Use @args.txt to pass arguments in a file.", fromfile_prefix_chars='@')
     parser.add_argument("-vc", "--video_codec", help="Set the video codec (default: libstvav1)", type=str, default="libsvtav1")
     parser.add_argument("-vb", "--video_bitrate", help="Set the video bitrate (default: 3000k)", type=str, default="3000k")
     parser.add_argument("-crf", "-cq", help="Set the video Constant Rate Factor / Constant Quality (0-51). Overrides bitrate if set. (default: not set)", type=str, default=None)
@@ -141,9 +150,9 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--subtitles", help="Set the subtitles languages, can set multiple languages, takes from source (default: fre)", nargs='+', default=["fre",])
     parser.add_argument("-pass", "--passthrough", help="Pass the argument to ffmpeg", type=str, default=None)
     parser.add_argument("-v", "--loglevel", help="Set the loglevel of ffmpeg (default: warning)", type=str, default="warning")
-    parser.add_argument("--out_freq", help="Set the stats output refresh frequency for the progress bar, in seconds (default: 5)", type=str, default="5")
+    parser.add_argument("--out_freq", help="Set the stats output refresh frequency for the progress bar, in seconds (default: 10)", type=str, default="10")
 
-    parser.add_argument("-fg", "--frame_gen", help="Set the frame interpolation factor using RIFE (default: 1 (no gen))", type=int, default=1)
+    parser.add_argument("-fg", "--frame_gen", help="Set the frame interpolation factor using RIFE. Disables hwaccel options (default: 1 (no gen))", type=int, default=1)
 
     parser.add_argument("--sleep", help="Sleep after finished", type=bool, default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--shutdown", help="Shutdown after finished", type=bool, default=False, action=argparse.BooleanOptionalAction)

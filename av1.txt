@@ -1,5 +1,17 @@
+-vc
+libsvtav1
 -crf
 25
+-p
+4
+-pfmt
+yuv420p10le
+-ac
+libopus
+-ab
+96k
+-ar
+48000
 -hwaccel
 cuda
 -pass=-svtav1-params tune=0:aq-mode=2:enable-overlays=1
