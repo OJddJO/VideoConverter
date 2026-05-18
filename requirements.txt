@@ -36,7 +36,7 @@ tensorrt_cu13_libs==10.15.1.29
 torch==2.11.0+cu126
 torch_tensorrt==2.11.0+cu126
 torchaudio==2.11.0+cu126
-torchvision==0.27.0+cu126
+torchvision==0.26.0+cu126
 tqdm==4.67.3
 typer==0.25.1
 typing_extensions==4.15.0
